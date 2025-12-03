@@ -1,5 +1,4 @@
 # MicroPython SSD1306 OLED driver, I2C and SPI interfaces
-
 from micropython import const
 import framebuf
 
@@ -108,6 +107,53 @@ class SSD1306(framebuf.FrameBuffer):
         self.write_cmd(0)
         self.write_cmd(self.pages - 1)
         self.write_data(self.buffer)
+
+    def text_wrap(self, text, x, y, color=1, max_width=None):
+        """
+        Affiche du texte avec retour a la ligne automatique.
+        
+        Args:
+            text: texte a afficher
+            x: position x de depart
+            y: position y de depart
+            color: couleur (1=blanc, 0=noir)
+            max_width: largeur max en pixels (defaut: largeur ecran - x)
+        """
+        if max_width is None:
+            max_width = self.width - x
+        
+        char_width = 8
+        char_height = 8
+        chars_per_line = max_width // char_width
+        
+        if chars_per_line <= 0:
+            return
+        
+        current_y = y
+        words = text.split(' ')
+        line = ""
+        
+        for word in words:
+            while len(word) > chars_per_line:
+                if line:
+                    self.text(line, x, current_y, color)
+                    current_y += char_height
+                    line = ""
+                self.text(word[:chars_per_line], x, current_y, color)
+                current_y += char_height
+                word = word[chars_per_line:]
+            
+            test_line = line + (" " if line else "") + word
+            if len(test_line) <= chars_per_line:
+                line = test_line
+            else:
+                if line:
+                    self.text(line, x, current_y, color)
+                    current_y += char_height
+                line = word
+        
+        if line:
+            self.text(line, x, current_y, color)
 
 
 class SSD1306_I2C(SSD1306):
