@@ -72,7 +72,7 @@
     var btnstate = false;
     function btnToggle(){
       btnstate = (btnstate==true)?false:true;
-      socket.send("Button : "+btnstate);
+      socket.send("Button Pushed \t state:"+btnstate);
     };
     //***************
     // COLOR PICKER WS
