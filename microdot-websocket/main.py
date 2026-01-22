@@ -17,4 +17,4 @@ async def echo(request, ws):
         # print(f'{type(data)} : {data}')
         print(data)
 
-app.run()
+app.run(host='0.0.0.0', port='5000')
