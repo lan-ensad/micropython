@@ -46,7 +46,6 @@
     //***************
     // TXT
     const log = (text, color) => {
-      // document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
     };
     document.getElementById('form').onsubmit = ev => {
       ev.preventDefault();
@@ -58,7 +57,6 @@
     //***************
     // SLIDER WS
     const slider = (data)=>{
-      // document.getElementById('sliderVal').innerHTML = data
     };
     socket.addEventListener('message', ev=>{
       slider(ev.data);
@@ -79,7 +77,6 @@
     //***************
     // COLOR PICKER WS
     const colorpicker = (data)=>{
-      // document.getElementById('sliderVal').innerHTML = data
     };
     socket.addEventListener('message', ev=>{
       colorpicker(ev.data);
@@ -93,16 +90,15 @@
     //***************
     // CHECK BOX WS
     const checkbox = (data)=>{
-      // document.getElementById('sliderVal').innerHTML = data
     };
     socket.addEventListener('message', ev=>{
       checkbox(ev.data);
     });
-    document.getElementById("checkbox").oninput = ev =>{
+    document.getElementById("checkbox").oninput = ev => {
       ev.preventDefault();
       const checkboxVal = document.getElementById('checkbox');
-      checkbox(checkboxVal.value);
-      socket.send("Check box : "+checkboxVal.value);
+      const checkedStatus = checkboxVal.checked ? "checked" : "unchecked";
+      socket.send("Check box : " + checkedStatus);
     };
   </script>
 </body>
