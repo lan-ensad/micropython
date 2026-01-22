@@ -1,3 +1,9 @@
+# ===== STEP 1 =====
+# #Configure webrepl_cfg.py
+# import webrepl_setup
+
+# ===== STEP 2 =====
+# #launch STA OR AP
 import time
 import network
 import webrepl
