@@ -1,5 +1,6 @@
 SYNC_BYTE = 0xC8
 TYPE_RC_CHANNELS = 0x16
+TYPE_LINK_STATS = 0x14
 MAX_FRAME = 64
 BUFFER_MAX = 128
 
@@ -20,6 +21,23 @@ CRSF_MIN = 172
 CRSF_MAX = 1811
 RC_MIN = 1000
 RC_MAX = 2000
+
+
+def decode_link_stats(payload):
+    if len(payload) < 10:
+        return None
+    return {
+        "rssi1": -payload[0],        # Uplink RSSI Ant1 (dBm, négatif)
+        "rssi2": -payload[1],        # Uplink RSSI Ant2 (dBm, négatif)
+        "lq": payload[2],            # Uplink Link Quality (%)
+        "snr": payload[3] - 256 if payload[3] > 127 else payload[3],  # SNR (dB, signé)
+        "ant": payload[4],           # Antenne active
+        "mode": payload[5],          # RF Mode
+        "tx_power": payload[6],      # Uplink TX Power (index)
+        "rssi_down": -payload[7],    # Downlink RSSI (dBm)
+        "lq_down": payload[8],       # Downlink LQ (%)
+        "snr_down": payload[9] - 256 if payload[9] > 127 else payload[9],  # Downlink SNR
+    }
 
 
 def decode_channels(payload):
@@ -99,9 +117,12 @@ class CRSFParser:
             self.buf = self.buf[frame_size:]
 
             if frame_type == TYPE_RC_CHANNELS and len(payload) >= 22:
-                return decode_channels(payload)
+                return ("channels", decode_channels(payload))
 
-            # Trame valide mais pas RC channels, continuer à chercher
+            if frame_type == TYPE_LINK_STATS:
+                return ("link_stats", decode_link_stats(payload))
+
+            # Trame valide mais type non géré, continuer
             continue
 
         return None
