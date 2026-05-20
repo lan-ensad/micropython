@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "keyboard_picoW",
+			"path": "keyboard_picoW"
+		}
+	],
+	"settings": {}
+}
